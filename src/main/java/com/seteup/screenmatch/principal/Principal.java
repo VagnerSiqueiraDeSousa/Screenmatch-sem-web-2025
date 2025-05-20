@@ -6,9 +6,8 @@ import com.seteup.screenmatch.model.DadosTemporadas;
 import com.seteup.screenmatch.service.ConsumoApi;
 import com.seteup.screenmatch.service.ConverterDados;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -37,6 +36,7 @@ public class Principal {
 
 		}
 		temporadas.forEach(System.out::println);
+//o foreach abaixo resume tudo esse for
 
 //        for(int i = 0; i < dados.totalTemporadas(); i++){
 //            List<DadosEpisodio> episodiosTemporada = temporadas.get(i).episodios();
@@ -46,6 +46,18 @@ public class Principal {
 //        }
 
         temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+        temporadas.forEach(System.out::println);
+
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
+
+        System.out.println("\n Top 5 episodios");
+        dadosEpisodios.stream()
+                .filter( e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .limit(5)
+                .forEach(System.out::println);
 
     }
 }
